@@ -15,7 +15,7 @@ import org.yuelao.common.core.spring.SpringContextHelper;
 import java.io.Serializable;
 
 /**
- *
+ *test
  * @param <T>
  */
 @NoArgsConstructor
