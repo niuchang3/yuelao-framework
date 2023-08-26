@@ -14,13 +14,7 @@ import org.yuelao.common.core.spring.SpringContextHelper;
 
 import java.io.Serializable;
 
-/**
- * 数据统一返回模型
- *
- * @author Young
- * @description
- * @date 2020/6/23
- */
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
