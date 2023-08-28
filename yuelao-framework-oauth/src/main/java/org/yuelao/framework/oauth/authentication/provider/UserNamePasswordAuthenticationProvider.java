@@ -5,7 +5,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.yuelao.framework.oauth.authentication.token.UserNamePasswordAuthenticationToken;
+import org.yuelao.framework.oauth.authentication.token.password.UserNamePasswordAuthenticationToken;
 
 /**
  * 用户名密码验证支持程序

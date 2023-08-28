@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.yuelao.framework.oauth.authentication.token.TokenGenerator;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -39,6 +40,9 @@ public class OauthAuthenticationFilter extends OncePerRequestFilter {
 	private HttpMessageConverter<Object> messageConverter;
 	
 	
+	private TokenGenerator tokenGenerator;
+	
+	
 	public OauthAuthenticationFilter addAuthenticationManager(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 		return this;
@@ -61,6 +65,11 @@ public class OauthAuthenticationFilter extends OncePerRequestFilter {
 	
 	public OauthAuthenticationFilter addHttpMessageConverter(HttpMessageConverter messageConverter) {
 		this.messageConverter = messageConverter;
+		return this;
+	}
+	
+	public OauthAuthenticationFilter addTokenGenerator(TokenGenerator tokenGenerator) {
+		this.tokenGenerator = tokenGenerator;
 		return this;
 	}
 	
