@@ -15,7 +15,7 @@ import org.yuelao.framework.oauth.authentication.AbstractAuthenticationConfigure
 import org.yuelao.framework.oauth.authentication.converter.AbstractAuthenticationConverter;
 import org.yuelao.framework.oauth.authentication.converter.DelegatingAuthenticationConverter;
 import org.yuelao.framework.oauth.authentication.converter.UserNamePasswordAuthenticationConverter;
-import org.yuelao.framework.oauth.authentication.token.UserNamePasswordAuthenticationToken;
+import org.yuelao.framework.oauth.authentication.token.password.UserNamePasswordAuthenticationToken;
 import org.yuelao.framework.oauth.authentication.filter.OauthAuthenticationFilter;
 import org.yuelao.framework.oauth.authentication.provider.UserNamePasswordAuthenticationProvider;
 

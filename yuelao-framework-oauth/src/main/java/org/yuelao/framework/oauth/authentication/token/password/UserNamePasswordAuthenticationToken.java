@@ -1,4 +1,4 @@
-package org.yuelao.framework.oauth.authentication.token;
+package org.yuelao.framework.oauth.authentication.token.password;
 
 import com.google.common.collect.Lists;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -6,6 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+/**
+ * 认证时添加的用户信息
+ */
 public class UserNamePasswordAuthenticationToken extends AbstractAuthenticationToken {
 	/**
 	 * 通常放账号信息
@@ -22,11 +25,11 @@ public class UserNamePasswordAuthenticationToken extends AbstractAuthenticationT
 	
 	private String captcha;
 	
-	public UserNamePasswordAuthenticationToken(Object principal, Object credentials,String uuid,String captcha) {
-		this(Lists.newArrayList(), principal, credentials,uuid,captcha);
+	public UserNamePasswordAuthenticationToken(Object principal, Object credentials, String uuid, String captcha) {
+		this(Lists.newArrayList(), principal, credentials, uuid, captcha);
 	}
 	
-	public UserNamePasswordAuthenticationToken(Collection<? extends GrantedAuthority> authorities, Object principal, Object credentials,String uuid,String captcha) {
+	public UserNamePasswordAuthenticationToken(Collection<? extends GrantedAuthority> authorities, Object principal, Object credentials, String uuid, String captcha) {
 		super(authorities);
 		this.principal = principal;
 		this.credentials = credentials;

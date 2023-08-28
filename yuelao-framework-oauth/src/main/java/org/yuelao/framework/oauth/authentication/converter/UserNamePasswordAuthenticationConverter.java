@@ -3,7 +3,7 @@ package org.yuelao.framework.oauth.authentication.converter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.yuelao.framework.oauth.authentication.UserNamePasswordGrantType;
-import org.yuelao.framework.oauth.authentication.token.UserNamePasswordAuthenticationToken;
+import org.yuelao.framework.oauth.authentication.token.password.UserNamePasswordAuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -53,6 +53,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.yuelao</groupId>
             <artifactId>yuelao-framework-common-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
