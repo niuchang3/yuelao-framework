@@ -1,3 +1,11 @@
 spring:
   profiles:
     active: dev
+
+
+
+yuelao:
+  token:
+    issuer: YueLao2023
+    expire: 30
+    refreshExpire: 60

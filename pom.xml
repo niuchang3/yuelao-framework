@@ -24,6 +24,7 @@
         <module>yuelao-framework-dependencies</module>
         <module>yuelao-framework-oauth</module>
         <module>yuelao-framework-commons</module>
+        <module>yuelao-framework-starter</module>
     </modules>
 
 
