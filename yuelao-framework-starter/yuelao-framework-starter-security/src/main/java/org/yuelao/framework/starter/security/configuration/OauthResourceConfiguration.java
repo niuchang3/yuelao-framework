@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.yuelao.framework.starter.security.converter.AbstractAuthenticationConverter;
 import org.yuelao.framework.starter.security.converter.DelegatingAuthenticationConverter;
@@ -19,8 +20,7 @@ public class OauthResourceConfiguration extends AbstractHttpConfigurer<OauthReso
 	
 	@Override
 	public void init(HttpSecurity builder) throws Exception {
-		RequestCache sharedObject = builder.getSharedObject(RequestCache.class);
-		
+		builder.setSharedObject(RequestCache.class,new NullRequestCache());
 		super.init(builder);
 	}
 	

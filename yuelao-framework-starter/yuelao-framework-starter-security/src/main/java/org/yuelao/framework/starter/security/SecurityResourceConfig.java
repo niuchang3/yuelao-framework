@@ -7,6 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.savedrequest.NullRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,5 +59,11 @@ public class SecurityResourceConfig {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+
+	@Bean
+	public RequestCache requestCache(){
+		return  new NullRequestCache();
 	}
 }

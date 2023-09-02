@@ -41,7 +41,7 @@ public class BasicPasswordAuthenticationProvider extends BasicAuthenticationProv
 		BasicPasswordAuthenticationToken resToken = new BasicPasswordAuthenticationToken(collect, details.getUsername(), null, null, null);
 		resToken.setDetails(details);
 		resToken.setAuthenticated(true);
-		return authentication;
+		return resToken;
 	}
 	
 	/**
