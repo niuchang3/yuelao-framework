@@ -1,5 +1,7 @@
 package org.yuelao.framework.starter.security.token.encoder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
@@ -9,12 +11,16 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.yuelao.framework.starter.security.exception.JwtTokenException;
 import org.yuelao.framework.starter.security.properties.TokenSettingsProperties;
+import org.yuelao.framework.starter.security.token.BearerTokenAuthenticationToken;
 import org.yuelao.framework.starter.security.token.OAuth2Token;
 import org.yuelao.framework.starter.security.token.TokenEncoder;
+import org.yuelao.framework.starter.security.user.UserInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.PrivateKey;
@@ -22,8 +28,10 @@ import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
@@ -44,6 +52,9 @@ public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
 	
 	
 	private String bearerTokenHeaderName = HttpHeaders.AUTHORIZATION;
+	
+	
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	
 	private static final Pattern authorizationPattern = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-._~+/]+=*)$",
 			Pattern.CASE_INSENSITIVE);
@@ -90,7 +101,7 @@ public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
 				.issueTime(signTime)
 				.notBeforeTime(signTime)
 				.expirationTime(expireTime)
-				.claim("authentication", authentication)
+				.claim("authentication", authentication.getDetails())
 				.build();
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
 				.type(JOSEObjectType.JWT)
@@ -119,7 +130,15 @@ public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
 			if (!parse.verify(verifier)) {
 				throw new JwtTokenException("token 验签失败。");
 			}
-			return (Authentication) parse.getJWTClaimsSet().getClaim("authentication");
+			Object authentication = parse.getJWTClaimsSet().getClaim("authentication");
+			UserInfo userInfo = objectMapper.convertValue(authentication, UserInfo.class);
+			if (CollectionUtils.isEmpty(userInfo.getAuthorities())) {
+				userInfo.setAuthorities(Lists.newArrayList());
+			}
+			List<SimpleGrantedAuthority> collect = userInfo.getAuthorities().stream().map(str -> new SimpleGrantedAuthority(str)).collect(Collectors.toList());
+			BearerTokenAuthenticationToken authenticationToken = new BearerTokenAuthenticationToken(collect, userInfo.getUsername(), null);
+			authenticationToken.setAuthenticated(true);
+			return authenticationToken;
 		} catch (ParseException e) {
 			//TODO 此处应该抛出非法签名异常
 			throw new JwtTokenException("token 异常", e);
@@ -129,12 +148,6 @@ public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
 		}
 	}
 	
-	@Override
-	public String extractToken(HttpServletRequest request) {
-		
-		
-		return null;
-	}
 	
 	private Calendar getNow() {
 		return Calendar.getInstance();

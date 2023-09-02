@@ -2,7 +2,6 @@ package org.yuelao.framework.oauth.authentication.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
@@ -23,9 +22,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 基本身份认证过滤器
@@ -98,24 +94,9 @@ public class BasicAuthenticationEndpointFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		if (!authenticationRequestMatcher.matches(request)) {
-			//test
-			Pattern compile = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-._~+/]+=*)$",
-					Pattern.CASE_INSENSITIVE);
-			
-			String authorization = request.getHeader( HttpHeaders.AUTHORIZATION);
-			Matcher matcher = compile.matcher(authorization);
-			matcher.matches();
-			String token = matcher.group("token");
-			try {
-				tokenEncoder.decode(token);
-			} catch (ParseException e) {
-			
-			}
-			
 			filterChain.doFilter(request, response);
 			return;
 		}
-		
 		Authentication authentication = converter.convert(request);
 		if (ObjectUtils.isEmpty(authentication)) {
 			filterChain.doFilter(request, response);

@@ -10,6 +10,7 @@ import org.yuelao.common.core.web.ResultModel;
 @RequestMapping("/test")
 public class Demo {
 	
+	
 	@GetMapping
 	public ResultModel<String> test() {
 		return ResultModel.success("SUCCESS");

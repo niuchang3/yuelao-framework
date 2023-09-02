@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.configurers.DefaultLog
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.yuelao.framework.oauth.authentication.exception.AccessDeniedHandlerImpl;
 import org.yuelao.framework.oauth.authentication.exception.AuthenticationEntryPointImpl;
+import org.yuelao.framework.starter.security.configuration.OauthResourceConfiguration;
 
 
 public class DefaultAuthenticationServerConfig {
@@ -21,14 +22,17 @@ public class DefaultAuthenticationServerConfig {
 		http.exceptionHandling().accessDeniedHandler(new AccessDeniedHandlerImpl());
 		// 添加基础认证Configuration
 		BasicAuthenticationConfiguration configuration = new BasicAuthenticationConfiguration();
+		OauthResourceConfiguration resourceConfiguration = new OauthResourceConfiguration();
 		
-		
-		http.apply(configuration)
+		http
+				.apply(resourceConfiguration)
+				.and()
+				.apply(configuration)
 				.and()
 				// 关闭csrf校验
-				.csrf().ignoringRequestMatchers(configuration.getRequestMatcher());
+				.csrf().disable();
 //				.and()
-				// 匹配端点
+		// 匹配端点
 //				.requestMatcher(configuration.getRequestMatcher());
 		
 		http.authorizeRequests().anyRequest().authenticated();

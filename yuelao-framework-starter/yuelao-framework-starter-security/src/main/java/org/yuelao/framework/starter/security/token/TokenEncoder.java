@@ -2,7 +2,6 @@ package org.yuelao.framework.starter.security.token;
 
 import org.springframework.security.core.Authentication;
 
-import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 
 public interface TokenEncoder<T extends OAuth2Token> {
@@ -23,6 +22,4 @@ public interface TokenEncoder<T extends OAuth2Token> {
 	 */
 	Authentication decode(String token) throws ParseException;
 	
-	
-	String extractToken(HttpServletRequest request);
 }
