@@ -79,8 +79,8 @@ public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
 		Calendar refreshExpire = getNow();
 		refreshExpire.add(Calendar.MINUTE, properties.getRefreshExpire());
 		
-		String accessToken = encode(properties.getIssuer(), accessExpire.getTime(), authentication);
-		String refreshToken = encode(properties.getIssuer(), refreshExpire.getTime(), authentication);
+		String accessToken = encode("accessToken", properties.getIssuer(), accessExpire.getTime(), authentication);
+		String refreshToken = encode("refreshToken", properties.getIssuer(), refreshExpire.getTime(), authentication);
 		return new OAuth2Token("Bearer", accessToken, accessExpire.getTime().getTime(), refreshToken, refreshExpire.getTime().getTime());
 		
 	}
@@ -93,7 +93,7 @@ public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
 	 * @param authentication
 	 * @return
 	 */
-	private String encode(String issuer, Date expireTime, Authentication authentication) {
+	private String encode(String tokenType, String issuer, Date expireTime, Authentication authentication) {
 		Calendar now = getNow();
 		Date signTime = now.getTime();
 		JWTClaimsSet build = new JWTClaimsSet.Builder()
@@ -105,8 +105,8 @@ public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
 				.build();
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
 				.type(JOSEObjectType.JWT)
+				.customParam("tokenType", tokenType)
 				.build();
-		
 		SignedJWT signedJWT = new SignedJWT(header, build);
 		
 		try {
@@ -138,6 +138,8 @@ public class JwtTokenEncoder implements TokenEncoder<OAuth2Token> {
 			List<SimpleGrantedAuthority> collect = userInfo.getAuthorities().stream().map(str -> new SimpleGrantedAuthority(str)).collect(Collectors.toList());
 			BearerTokenAuthenticationToken authenticationToken = new BearerTokenAuthenticationToken(collect, userInfo.getUsername(), null);
 			authenticationToken.setAuthenticated(true);
+			authenticationToken.setTokenType((String) parse.getHeader().getCustomParam("tokenType"));
+			authenticationToken.setExpires(parse.getJWTClaimsSet().getExpirationTime());
 			return authenticationToken;
 		} catch (ParseException e) {
 			//TODO 此处应该抛出非法签名异常

@@ -1,12 +1,24 @@
 package org.yuelao.framework.starter.security.token;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.Date;
 
 public class BearerTokenAuthenticationToken extends AbstractAuthenticationToken {
 	
+	@Getter
+	@Setter
+	private String tokenType;
+	/**
+	 * 过期时间
+	 */
+	@Getter
+	@Setter
+	private Date expires;
 	/**
 	 * 通常放账号信息
 	 */
