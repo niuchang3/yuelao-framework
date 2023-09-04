@@ -33,6 +33,5 @@ public class OauthResourceConfiguration extends AbstractHttpConfigurer<OauthReso
 		BearerTokenAuthenticationFilter filter = new BearerTokenAuthenticationFilter();
 		filter.addAuthenticationConverter(delegatingAuthenticationConverter);
 		httpSecurity.addFilterBefore(filter, FilterSecurityInterceptor.class);
-		System.out.println("2");
 	}
 }
