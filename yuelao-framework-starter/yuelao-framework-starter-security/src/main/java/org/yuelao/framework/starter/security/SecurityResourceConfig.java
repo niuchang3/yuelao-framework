@@ -2,13 +2,14 @@ package org.yuelao.framework.starter.security;
 
 
 import cn.hutool.crypto.PemUtil;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.savedrequest.NullRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
+import org.yuelao.framework.starter.security.core.encoder.JwtTokenEncoder;
+import org.yuelao.framework.starter.security.core.encoder.TokenEncoder;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,10 +61,18 @@ public class SecurityResourceConfig {
 			throw new RuntimeException(e);
 		}
 	}
-
-
+	
+	/**
+	 * Token编码器
+	 *
+	 * @param privateKey
+	 * @param publicKey
+	 * @return
+	 */
+	@ConditionalOnMissingBean(TokenEncoder.class)
 	@Bean
-	public RequestCache requestCache(){
-		return  new NullRequestCache();
+	public TokenEncoder tokenEncoder(PrivateKey privateKey, RSAPublicKey publicKey) {
+		return new JwtTokenEncoder(privateKey, publicKey);
 	}
+	
 }

@@ -5,7 +5,9 @@ spring:
 
 
 yuelao:
-  token:
-    issuer: YueLao2023
-    expire: 30
-    refreshExpire: 60
+  authentication:
+    loginPage: http://www.baidu.com
+    tokenSettings:
+      expires: 30
+      refreshExpires: 60
+

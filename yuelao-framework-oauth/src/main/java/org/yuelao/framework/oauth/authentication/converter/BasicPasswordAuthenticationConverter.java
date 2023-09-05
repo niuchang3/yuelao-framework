@@ -2,31 +2,28 @@ package org.yuelao.framework.oauth.authentication.converter;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationConverter;
-import org.yuelao.framework.oauth.authentication.token.OauthGrantType;
-import org.yuelao.framework.oauth.authentication.token.OauthPasswordGrantType;
-import org.yuelao.framework.oauth.authentication.token.auth.BasicPasswordAuthenticationToken;
-import org.yuelao.framework.starter.security.converter.AbstractAuthenticationConverter;
+import org.yuelao.framework.oauth.authentication.BasicPasswordAuthenticationToken;
+import org.yuelao.framework.oauth.authentication.GrantType;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class BasicPasswordAuthenticationConverter extends AbstractAuthenticationConverter implements AuthenticationConverter {
+public class BasicPasswordAuthenticationConverter implements AuthenticationConverter {
 	
 	
 	@Override
-	protected boolean supports(HttpServletRequest request) {
-		String grantType = extractRequestHeader(request, OauthGrantType.GRANT_TYPE_NAME);
-		return OauthPasswordGrantType.GRANT_TYPE.getCode().equals(grantType);
+	public Authentication convert(HttpServletRequest request) {
+		String grantType = request.getParameter(GrantType.GRANT_TYPE_NAME);
+		if (!GrantType.PasswordParams.password.name().equals(grantType)) {
+			return null;
+		}
+		
+		BasicPasswordAuthenticationToken authenticationToken = new BasicPasswordAuthenticationToken();
+		authenticationToken.setUuid(request.getParameter(GrantType.PasswordParams.uuid.name()));
+		authenticationToken.setCaptcha(request.getParameter(GrantType.PasswordParams.captcha.name()));
+		authenticationToken.setPrincipal(request.getParameter(GrantType.PasswordParams.account.name()));
+		authenticationToken.setCredentials(request.getParameter(GrantType.PasswordParams.password.name()));
+		return authenticationToken;
 	}
-	
-	@Override
-	protected Authentication doConvert(HttpServletRequest request) {
-		String userName = extractRequestParameter(request, OauthPasswordGrantType.USERNAME.getCode());
-		String password = extractRequestParameter(request, OauthPasswordGrantType.PASSWORD.getCode());
-		String uuid = extractRequestParameter(request, OauthPasswordGrantType.UUID.getCode());
-		String captcha = extractRequestParameter(request, OauthPasswordGrantType.CAPTCHA.getCode());
-		return new BasicPasswordAuthenticationToken(userName, password, uuid, captcha);
-	}
-	
 	
 	
 }

@@ -14,6 +14,7 @@ public enum HttpStatusCode implements HttpStatusCodeConverter {
 	 */
 	PERMISSION_EXCEPTION(4000, ""),
 	AUTHENTICATION_FAILED(4001, "认证失败"),
+	INSUFFICIENT_PERMISSIONS(4002, "权限不足,请联系管理员提升权限"),
 	
 	/**
 	 * 操作异常
