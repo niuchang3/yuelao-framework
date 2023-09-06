@@ -7,12 +7,13 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.Getter;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.yuelao.framework.starter.security.core.exception.TokenExpiresException;
 import org.yuelao.framework.starter.security.core.exception.TokenParseException;
 import org.yuelao.framework.starter.security.core.exception.TokenSignException;
+import org.yuelao.framework.starter.security.core.token.AbstractBasicAuthenticationToken;
 import org.yuelao.framework.starter.security.resource.token.BearerTokenAuthenticationToken;
 import org.yuelao.framework.starter.security.user.UserInfo;
 
@@ -55,14 +56,15 @@ public class JwtTokenEncoder implements TokenEncoder {
 	 * @return
 	 */
 	@Override
-	public String encode(String tokenType, Date expires, Authentication authentication) {
+	public String encode(AbstractBasicAuthenticationToken authentication) {
 		Date currentTime = getNow().getTime();
 		JWTClaimsSet build = new JWTClaimsSet.Builder()
 				.issueTime(getNow().getTime())
 				.notBeforeTime(currentTime)
-				.expirationTime(expires)
+				.expirationTime(authentication.getExpires())
 				.claim("details", authentication.getDetails())
-				.claim("tokenType", tokenType)
+				.claim("tokenType", authentication.getTokenType())
+				.claim("ip", authentication.getIp())
 				.build();
 		JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
 				.type(JOSEObjectType.JWT)
@@ -85,7 +87,7 @@ public class JwtTokenEncoder implements TokenEncoder {
 	 * @return
 	 */
 	@Override
-	public Authentication decode(String token) {
+	public AbstractBasicAuthenticationToken decode(String token) {
 		try {
 			SignedJWT parse = SignedJWT.parse(token);
 			if (!parse.verify(verifier)) {
@@ -93,14 +95,15 @@ public class JwtTokenEncoder implements TokenEncoder {
 			}
 			Date expirationTime = parse.getJWTClaimsSet().getExpirationTime();
 			
-			String tokenType = (String) parse.getJWTClaimsSet().getClaim("tokenType");
+			
 			
 			if (getNow().getTime().getTime() > expirationTime.getTime()) {
-				throw new CredentialsExpiredException(tokenType + "已过期");
+				throw new TokenExpiresException();
 			}
 			Object authentication = parse.getJWTClaimsSet().getClaim("details");
+			String tokenType = (String) parse.getJWTClaimsSet().getClaim("tokenType");
+			String ip = (String) parse.getJWTClaimsSet().getClaim("ip");
 			UserInfo userInfo = objectMapper.convertValue(authentication, UserInfo.class);
-			
 			List<GrantedAuthority> authorities = userInfo.getAuthorities().stream().map(str -> new SimpleGrantedAuthority(str)).collect(Collectors.toList());
 			BearerTokenAuthenticationToken authenticationToken = new BearerTokenAuthenticationToken();
 			authenticationToken.setAuthorities(authorities);
@@ -108,6 +111,7 @@ public class JwtTokenEncoder implements TokenEncoder {
 			authenticationToken.setDetails(userInfo);
 			authenticationToken.setTokenType(tokenType);
 			authenticationToken.setAuthenticated(true);
+			authenticationToken.setIp(ip);
 			return authenticationToken;
 		} catch (ParseException e) {
 			throw new TokenParseException(e);

@@ -5,6 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.Date;
 
 
 @Data
@@ -16,22 +17,36 @@ public abstract class AbstractBasicAuthenticationToken implements Authentication
 	/**
 	 * 通常存放认证时提供的账号信息
 	 */
-	private Object principal;
+	protected Object principal;
 	/**
 	 * 通常存放认证时添加的秘钥信息
 	 */
-	private Object credentials;
+	protected Object credentials;
 	/**
 	 * 通常存放用户详情
 	 */
 	protected Object details;
 	/**
+	 * Token类型
+	 */
+	protected String tokenType;
+	/**
+	 * 用户获取token时的ip信息
+	 */
+	protected String ip;
+	/**
+	 * 过期时间
+	 */
+	protected Date expires;
+	/**
 	 * 是否认证
 	 */
-	private boolean authenticated = false;
+	protected boolean authenticated = false;
 	
 	@Override
 	public String getName() {
 		return principal.toString();
 	}
+	
+	
 }

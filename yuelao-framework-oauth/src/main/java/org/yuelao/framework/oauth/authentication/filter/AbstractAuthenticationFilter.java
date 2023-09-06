@@ -1,5 +1,6 @@
 package org.yuelao.framework.oauth.authentication.filter;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.MediaType;
@@ -7,8 +8,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.ObjectUtils;
@@ -17,8 +16,8 @@ import org.yuelao.common.core.web.ResultModel;
 import org.yuelao.framework.oauth.authentication.properties.AuthenticationServerProperties;
 import org.yuelao.framework.starter.security.core.converter.DelegatingAuthenticationConverter;
 import org.yuelao.framework.starter.security.core.encoder.TokenEncoder;
+import org.yuelao.framework.starter.security.core.token.AbstractBasicAuthenticationToken;
 import org.yuelao.framework.starter.security.core.token.AccessTokenResponse;
-import org.yuelao.framework.starter.security.core.exception.AbstractAuthenticationException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -89,15 +88,24 @@ public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter 
 		if (ObjectUtils.isEmpty(authenticate)) {
 			return;
 		}
+		
+		// 开始派发token
+		AbstractBasicAuthenticationToken abstractBasicAuthenticationToken = (AbstractBasicAuthenticationToken) authenticate;
+		
 		Calendar accessTokenNow = getNow();
 		accessTokenNow.add(Calendar.MINUTE, authenticationServerProperties.getTokenSettings().getExpires());
+		abstractBasicAuthenticationToken.setIp(ServletUtil.getClientIP(request));
+		abstractBasicAuthenticationToken.setTokenType("accessToken");
+		abstractBasicAuthenticationToken.setExpires(accessTokenNow.getTime());
+		String accessToken = getTokenEncoder().encode(abstractBasicAuthenticationToken);
 		
 		Calendar refreshTokenNow = getNow();
 		refreshTokenNow.add(Calendar.MINUTE, authenticationServerProperties.getTokenSettings().getRefreshExpires());
+		abstractBasicAuthenticationToken.setTokenType("refreshToken");
+		abstractBasicAuthenticationToken.setExpires(refreshTokenNow.getTime());
 		
-		String accessToken = getTokenEncoder().encode("accessToken", accessTokenNow.getTime(), authenticate);
-		String refreshToken = getTokenEncoder().encode("refreshToken", refreshTokenNow.getTime(), authenticate);
 		
+		String refreshToken = getTokenEncoder().encode(abstractBasicAuthenticationToken);
 		AccessTokenResponse tokenResponse = new AccessTokenResponse();
 		tokenResponse.setExpires(accessTokenNow.getTime());
 		tokenResponse.setRefreshExpires(refreshTokenNow.getTime());
@@ -108,15 +116,6 @@ public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter 
 		ResultModel<AccessTokenResponse> resultModel = ResultModel.success(tokenResponse);
 		ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
 		messageConverter.write(resultModel, MediaType.APPLICATION_JSON, httpResponse);
-		
-		try {
-		
-			
-		} catch (AuthenticationException ex) {
-			SecurityContextHolder.clearContext();
-			ResultModel<Object> failed = new ResultModel<>();
-
-		}
 		
 	}
 	

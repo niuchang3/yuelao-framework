@@ -1,10 +1,12 @@
-package org.yuelao.framework.oauth.authentication.handler;
+package org.yuelao.framework.starter.security.core.handler;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.util.ObjectUtils;
 import org.yuelao.common.core.constants.CustomizationHttpStatus;
 import org.yuelao.common.core.web.ResultModel;
 import org.yuelao.framework.starter.security.core.exception.AbstractAuthenticationException;
@@ -31,14 +33,24 @@ public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 		
-		ResultModel<Object> failed;
+		ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
+		messageConverter.write(conversion(authException, request), MediaType.APPLICATION_JSON, httpResponse);
+	}
+	
+	
+	private ResultModel conversion(AuthenticationException authException, HttpServletRequest request) {
+		ResultModel<Object> failed = null;
 		if (authException instanceof AbstractAuthenticationException) {
 			AbstractAuthenticationException exception = (AbstractAuthenticationException) authException;
 			failed = ResultModel.failed(exception.getCode(), authException, authException.getMessage(), request.getRequestURI());
-		} else {
+		}
+		if (authException instanceof AuthenticationCredentialsNotFoundException) {
+			failed = ResultModel.failed(CustomizationHttpStatus.NOT_CERTIFIED, authException, CustomizationHttpStatus.NOT_CERTIFIED.getDescription(), request.getRequestURI());
+		}
+		
+		if (ObjectUtils.isEmpty(failed)) {
 			failed = ResultModel.failed(CustomizationHttpStatus.ERROR.getCode(), authException, authException.getMessage(), request.getRequestURI());
 		}
-		ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
-		messageConverter.write(failed, MediaType.APPLICATION_JSON, httpResponse);
+		return failed;
 	}
 }

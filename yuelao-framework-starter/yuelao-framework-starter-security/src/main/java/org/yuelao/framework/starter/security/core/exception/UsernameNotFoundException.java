@@ -1,15 +1,14 @@
 package org.yuelao.framework.starter.security.core.exception;
 
 import org.yuelao.common.core.constants.CustomizationHttpStatus;
-import org.yuelao.common.core.constants.HttpStatusCodeConverter;
 
-public class UsernameNotFoundException extends AbstractAuthenticationException{
+public class UsernameNotFoundException extends AbstractAuthenticationException {
 	
 	public UsernameNotFoundException() {
-		super(CustomizationHttpStatus.TOKEN_FORMAT_EXCEPTION);
+		super(CustomizationHttpStatus.USER_NOT_FOUND_EXCEPTION);
 	}
 	
-	public UsernameNotFoundException(HttpStatusCodeConverter httpStatusCode, Throwable cause) {
-		super(httpStatusCode, cause);
+	public UsernameNotFoundException(Throwable cause) {
+		super(CustomizationHttpStatus.USER_NOT_FOUND_EXCEPTION, cause);
 	}
 }

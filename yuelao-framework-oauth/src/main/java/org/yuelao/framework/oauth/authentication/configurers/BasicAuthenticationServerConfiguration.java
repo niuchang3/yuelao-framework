@@ -18,6 +18,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.yuelao.framework.oauth.authentication.converter.BasicPasswordAuthenticationConverter;
 import org.yuelao.framework.oauth.authentication.filter.AbstractAuthenticationFilter;
 import org.yuelao.framework.oauth.authentication.filter.BasicPasswordAuthenticationFilter;
+import org.yuelao.framework.starter.security.core.handler.AccessDeniedHandlerImpl;
+import org.yuelao.framework.starter.security.core.handler.AuthenticationEntryPointHandler;
 import org.yuelao.framework.oauth.authentication.properties.AuthenticationServerProperties;
 import org.yuelao.framework.oauth.authentication.provider.AbstractBasicAuthenticationProvider;
 import org.yuelao.framework.oauth.authentication.provider.BasicPasswordAuthenticationProvider;
@@ -89,11 +91,12 @@ public class BasicAuthenticationServerConfiguration extends AbstractConfiguratio
 	public void init(HttpSecurity httpSecurity) {
 		
 		try {
+			ApplicationContext context = httpSecurity.getSharedObject(ApplicationContext.class);
+			HttpMessageConverter httpMessageConverter = context.getBean(MappingJackson2HttpMessageConverter.class);
 			httpSecurity
 					.exceptionHandling()
-					.authenticationEntryPoint((request, response, authException) -> {
-					
-					});
+					.authenticationEntryPoint(new AuthenticationEntryPointHandler(httpMessageConverter))
+					.accessDeniedHandler(new AccessDeniedHandlerImpl(httpMessageConverter));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

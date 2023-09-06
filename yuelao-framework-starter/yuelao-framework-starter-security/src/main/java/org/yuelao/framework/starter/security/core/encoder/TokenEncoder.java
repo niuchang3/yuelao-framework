@@ -1,26 +1,22 @@
 package org.yuelao.framework.starter.security.core.encoder;
 
-import org.springframework.security.core.Authentication;
-
-import java.util.Date;
+import org.yuelao.framework.starter.security.core.token.AbstractBasicAuthenticationToken;
 
 public interface TokenEncoder {
 	
 	
 	/**
-	 * 对Authentication.details 进行编码生成加密TokenValue
+	 * AbstractBasicAuthenticationToken.details 进行编码生成加密TokenValue
 	 *
-	 * @param tokenType
-	 * @param expires
 	 * @param authentication
 	 * @return
 	 */
-	String encode(String tokenType, Date expires, Authentication authentication);
+	String encode(AbstractBasicAuthenticationToken authentication);
 	
 	/**
 	 * 对认证信息解码
 	 *
 	 * @return
 	 */
-	Authentication decode(String token);
+	AbstractBasicAuthenticationToken decode(String token);
 }

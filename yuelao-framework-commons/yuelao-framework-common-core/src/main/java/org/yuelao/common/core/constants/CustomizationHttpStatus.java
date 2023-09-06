@@ -16,11 +16,9 @@ public enum CustomizationHttpStatus implements HttpStatusCodeConverter {
 	/**
 	 * 4000以上的Code 为客户端相关的错误
 	 */
-	NOT_CERTIFIED(4001, "未经认证的请求,请先进行身份认证。"),
+	NOT_CERTIFIED(4001, "未认证的请求,请先进行身份认证。"),
 	UNAUTHORIZED(4002, "权限不足,请联系管理员提升权限。"),
-	ACCESS_TOKEN_EXPIRES(4003, "access token 过期,请刷新令牌。"),
-	REFRESH_TOKEN_EXPIRES(4003, "refresh token 过期,请重新获取。"),
-	
+	TOKEN_EXPIRES(4003, "token 过期,请重新获取。"),
 	TOKEN_SIGN_EXCEPTION(4004, "token 签名错误,请确认token是否正确。"),
 	TOKEN_PARSE_EXCEPTION(4005, "token 解析异常。"),
 	TOKEN_FORMAT_EXCEPTION(4006, "token 格式错误,请检查是否为Authorization:Bearer token格式。"),

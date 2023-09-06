@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.yuelao.framework.starter.security.core.configurers.AbstractConfiguration;
@@ -24,6 +25,8 @@ public class ResourceAuthenticationConfiguration extends AbstractConfiguration {
 	public void init(HttpSecurity httpSecurity) {
 		try {
 			httpSecurity.requestCache().disable();
+			httpSecurity.securityContext().securityContextRepository(new NullSecurityContextRepository());
+			httpSecurity.anonymous().disable();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

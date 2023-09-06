@@ -20,7 +20,7 @@ public class ResourcePermissions {
 		UserInfo details = (UserInfo) context.getAuthentication().getDetails();
 		// 如果是超级管理员，所有权限放行
 		if (details.isSuperAdmin()) {
-			return true;
+			return false;
 		}
 		//用户当前所拥有的权限集合
 		Collection<? extends GrantedAuthority> userAuthorities = context.getAuthentication().getAuthorities();

@@ -15,4 +15,10 @@ public class Demo {
 	public ResultModel<String> test() {
 		return ResultModel.success("SUCCESS");
 	}
+	
+	
+	@GetMapping("/test2")
+	public ResultModel<String> test2() {
+		return ResultModel.success("SUCCESS");
+	}
 }
