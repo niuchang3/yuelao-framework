@@ -11,7 +11,8 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.yuelao.framework.starter.security.error.JwtSignException;
+import org.yuelao.framework.starter.security.core.exception.TokenParseException;
+import org.yuelao.framework.starter.security.core.exception.TokenSignException;
 import org.yuelao.framework.starter.security.resource.token.BearerTokenAuthenticationToken;
 import org.yuelao.framework.starter.security.user.UserInfo;
 
@@ -72,7 +73,7 @@ public class JwtTokenEncoder implements TokenEncoder {
 			signedJWT.sign(jwsSigner);
 			return signedJWT.serialize();
 		} catch (JOSEException e) {
-			throw new JwtSignException("Jwt Token sign error", e);
+			throw new TokenSignException(e);
 		}
 	}
 	
@@ -84,11 +85,11 @@ public class JwtTokenEncoder implements TokenEncoder {
 	 * @return
 	 */
 	@Override
-	public Authentication decode(String token) throws ParseException {
+	public Authentication decode(String token) {
 		try {
 			SignedJWT parse = SignedJWT.parse(token);
 			if (!parse.verify(verifier)) {
-				throw new JwtSignException("JWT Token签名错误。");
+				throw new TokenSignException();
 			}
 			Date expirationTime = parse.getJWTClaimsSet().getExpirationTime();
 			
@@ -109,9 +110,9 @@ public class JwtTokenEncoder implements TokenEncoder {
 			authenticationToken.setAuthenticated(true);
 			return authenticationToken;
 		} catch (ParseException e) {
-			throw e;
+			throw new TokenParseException(e);
 		} catch (JOSEException e) {
-			throw new JwtSignException("JWT Token签名错误。");
+			throw new TokenSignException(e);
 		}
 	}
 	

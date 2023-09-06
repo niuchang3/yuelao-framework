@@ -2,7 +2,6 @@ package org.yuelao.framework.starter.security.core.encoder;
 
 import org.springframework.security.core.Authentication;
 
-import java.text.ParseException;
 import java.util.Date;
 
 public interface TokenEncoder {
@@ -23,5 +22,5 @@ public interface TokenEncoder {
 	 *
 	 * @return
 	 */
-	Authentication decode(String token) throws ParseException;
+	Authentication decode(String token);
 }

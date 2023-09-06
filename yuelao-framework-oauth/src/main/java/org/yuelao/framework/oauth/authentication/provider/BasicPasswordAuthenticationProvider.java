@@ -1,13 +1,13 @@
 package org.yuelao.framework.oauth.authentication.provider;
 
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.ObjectUtils;
 import org.yuelao.framework.oauth.authentication.BasicPasswordAuthenticationToken;
+import org.yuelao.framework.starter.security.core.exception.BadCredentialsException;
+import org.yuelao.framework.starter.security.core.exception.UsernameNotFoundException;
 import org.yuelao.framework.starter.security.user.UserInfo;
 
 import java.util.List;
@@ -23,12 +23,12 @@ public class BasicPasswordAuthenticationProvider extends AbstractBasicAuthentica
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		BasicPasswordAuthenticationToken passwordAuthenticationToken = (BasicPasswordAuthenticationToken) authentication;
 		UserInfo userInfo = getUserService().loadUserByAccount(passwordAuthenticationToken.getName());
-		if(ObjectUtils.isEmpty(userInfo)){
-			throw new UsernameNotFoundException("账号信息不存在。");
+		if (ObjectUtils.isEmpty(userInfo)) {
+			throw new UsernameNotFoundException();
 		}
 		
-		if(!getPasswordEncoder().matches((CharSequence) passwordAuthenticationToken.getCredentials(), userInfo.getPassword())){
-			throw new BadCredentialsException("密码错误。");
+		if (!getPasswordEncoder().matches((CharSequence) passwordAuthenticationToken.getCredentials(), userInfo.getPassword())) {
+			throw new BadCredentialsException();
 		}
 		
 		BasicPasswordAuthenticationToken authenticationToken = new BasicPasswordAuthenticationToken();

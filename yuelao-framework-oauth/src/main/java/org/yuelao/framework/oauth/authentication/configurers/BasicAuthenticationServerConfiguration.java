@@ -21,9 +21,9 @@ import org.yuelao.framework.oauth.authentication.filter.BasicPasswordAuthenticat
 import org.yuelao.framework.oauth.authentication.properties.AuthenticationServerProperties;
 import org.yuelao.framework.oauth.authentication.provider.AbstractBasicAuthenticationProvider;
 import org.yuelao.framework.oauth.authentication.provider.BasicPasswordAuthenticationProvider;
+import org.yuelao.framework.oauth.upms.service.UserService;
 import org.yuelao.framework.starter.security.core.configurers.AbstractConfiguration;
 import org.yuelao.framework.starter.security.core.encoder.TokenEncoder;
-import org.yuelao.framework.oauth.upms.service.UserService;
 
 import java.util.List;
 import java.util.Map;
@@ -87,6 +87,17 @@ public class BasicAuthenticationServerConfiguration extends AbstractConfiguratio
 	 */
 	@Override
 	public void init(HttpSecurity httpSecurity) {
+		
+		try {
+			httpSecurity
+					.exceptionHandling()
+					.authenticationEntryPoint((request, response, authException) -> {
+					
+					});
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
 		ApplicationContext context = httpSecurity.getSharedObject(ApplicationContext.class);
 		UserService userService = context.getBean(UserService.class);
 		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);

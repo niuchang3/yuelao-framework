@@ -15,7 +15,7 @@ public class DefaultBasicAuthenticationServerConfigurer {
 		
 		ApplicationContext context = httpSecurity.getSharedObject(ApplicationContext.class);
 		AuthenticationServerProperties properties = context.getBean(AuthenticationServerProperties.class);
-		httpSecurity.formLogin().loginPage(properties.getLoginPage());
+//		httpSecurity.formLogin().loginPage(properties.getLoginPage());
 		
 		//添加基础认证服务
 		delegateHttpConfigurer.addConfigurers(BasicAuthenticationServerConfiguration.class, new BasicAuthenticationServerConfiguration());

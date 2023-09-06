@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.util.ObjectUtils;
-import org.yuelao.common.core.constants.HttpStatusCode;
+import org.yuelao.common.core.constants.CustomizationHttpStatus;
 import org.yuelao.common.core.constants.HttpStatusCodeConverter;
 import org.yuelao.common.core.spring.SpringContextHelper;
 
@@ -55,7 +55,7 @@ public class ResultModel<T> implements Serializable {
 	 */
 	public static <T> ResultModel<T> success(T data) {
 		//URL 需要在上下文中获取
-		return new ResultModel(HttpStatusCode.SUCCESS.getCode(), "", HttpStatusCode.SUCCESS.getDescription(), data, "");
+		return new ResultModel(CustomizationHttpStatus.SUCCESS.getCode(), "", CustomizationHttpStatus.SUCCESS.getDescription(), data, "");
 	}
 	
 	/**
@@ -67,6 +67,10 @@ public class ResultModel<T> implements Serializable {
 	 */
 	public static <T> ResultModel<T> failed(HttpStatusCodeConverter requestCode, Throwable throwable, String message, String url) {
 		return new ResultModel(requestCode.getCode(), getDevMessage(throwable), message, null, url);
+	}
+	
+	public static <T> ResultModel<T> failed(Integer code, Throwable throwable, String message, String url) {
+		return new ResultModel(code, getDevMessage(throwable), message, null, url);
 	}
 	
 	/**
