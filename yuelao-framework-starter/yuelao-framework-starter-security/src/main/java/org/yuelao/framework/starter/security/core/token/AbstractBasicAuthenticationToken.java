@@ -13,7 +13,7 @@ public abstract class AbstractBasicAuthenticationToken implements Authentication
 	/**
 	 * 存放用户权限集合
 	 */
-	protected Collection<GrantedAuthority> authorities;
+	protected Collection<? extends GrantedAuthority> authorities;
 	/**
 	 * 通常存放认证时提供的账号信息
 	 */

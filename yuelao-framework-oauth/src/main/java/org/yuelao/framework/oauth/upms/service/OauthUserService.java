@@ -1,9 +1,9 @@
 package org.yuelao.framework.oauth.upms.service;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.yuelao.framework.starter.security.user.UserInfo;
+import org.yuelao.framework.starter.security.user.UserDetail;
 
-public interface UserService {
+public interface OauthUserService {
 	
 	/**
 	 * 根据账号加载用户
@@ -12,7 +12,7 @@ public interface UserService {
 	 * @return
 	 * @throws UsernameNotFoundException
 	 */
-	UserInfo loadUserByAccount(String username) throws UsernameNotFoundException;
+	UserDetail loadUserByAccount(String username) throws UsernameNotFoundException;
 	
 	/**
 	 * 根据电话号码加载用户
@@ -21,7 +21,7 @@ public interface UserService {
 	 * @return
 	 * @throws UsernameNotFoundException
 	 */
-	UserInfo loadUserByPhone(String phone) throws UsernameNotFoundException;
+	UserDetail loadUserByPhone(String phone) throws UsernameNotFoundException;
 	
 	/**
 	 * 根据邮箱加载用户
@@ -29,5 +29,5 @@ public interface UserService {
 	 * @param email
 	 * @return
 	 */
-	UserInfo loadUserByEmail(String email);
+	UserDetail loadUserByEmail(String email);
 }

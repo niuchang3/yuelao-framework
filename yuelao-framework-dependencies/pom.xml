@@ -22,6 +22,10 @@
         <!--   Spring相关jar包依赖版本信息     -->
         <spring.boot.version>2.7.14</spring.boot.version>
 
+        <!--   数据库相关jar包     -->
+        <mysql.version>8.0.28</mysql.version>
+        <druid.version>1.1.20</druid.version>
+        <mybatis.version>3.5.3</mybatis.version>
 
         <!--   google相关jar包     -->
         <guava.version>20.0</guava.version>
@@ -34,6 +38,7 @@
         <hutool.version>5.3.8</hutool.version>
         <jwt.version>9.31</jwt.version>
         <bouncycastle.version>1.76</bouncycastle.version>
+        <mapstruct.version>1.4.1.Final</mapstruct.version>
 
     </properties>
 
@@ -49,6 +54,29 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+
+            <!--mysql驱动-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+
+
 
 
             <dependency>
@@ -90,8 +118,49 @@
                 <version>${bouncycastle.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-jdk8</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

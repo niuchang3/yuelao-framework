@@ -20,4 +20,9 @@ public abstract class AbstractAuthenticationException extends AuthenticationExce
 		super(httpStatusCode.getDescription(), cause);
 		this.code = httpStatusCode.getCode();
 	}
+	
+	public AbstractAuthenticationException(HttpStatusCodeConverter httpCode, String message) {
+		super(message);
+		this.code = httpCode.getCode();
+	}
 }

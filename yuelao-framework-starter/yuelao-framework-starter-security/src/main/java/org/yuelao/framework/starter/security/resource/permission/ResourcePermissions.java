@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.yuelao.framework.starter.security.user.UserInfo;
+import org.yuelao.framework.starter.security.user.UserDetail;
 
 import java.util.Collection;
 
@@ -17,7 +17,7 @@ public class ResourcePermissions {
 	
 	public boolean check() {
 		SecurityContext context = SecurityContextHolder.getContext();
-		UserInfo details = (UserInfo) context.getAuthentication().getDetails();
+		UserDetail details = (UserDetail) context.getAuthentication().getDetails();
 		// 如果是超级管理员，所有权限放行
 		if (details.isSuperAdmin()) {
 			return false;

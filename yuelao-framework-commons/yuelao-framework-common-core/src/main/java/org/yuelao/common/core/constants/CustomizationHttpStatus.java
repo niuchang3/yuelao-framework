@@ -26,6 +26,10 @@ public enum CustomizationHttpStatus implements HttpStatusCodeConverter {
 	USER_NOT_FOUND_EXCEPTION(4007, "请核实用户名是否正确"),
 	BAD_CREDENTIALS_EXCEPTION(4008, "请核实凭据是否正确。"),
 	
+	PROHIBITED_USE_EXCEPTION(4009, "系统禁止使用该账号,请联系管理员进行解锁。"),
+	
+	CAPTCHA_EXCEPTION(4010, "验证码错误。"),
+	
 	
 	;
 	

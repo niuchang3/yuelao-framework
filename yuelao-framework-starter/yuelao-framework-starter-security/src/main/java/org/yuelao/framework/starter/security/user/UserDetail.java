@@ -2,11 +2,13 @@ package org.yuelao.framework.starter.security.user;
 
 import lombok.Data;
 import org.yuelao.framework.starter.security.constant.BasicUserType;
+import org.yuelao.framework.starter.security.core.authority.TenantGrantedAuthority;
 
 import java.util.List;
 
+
 @Data
-public class UserInfo {
+public class UserDetail {
 	
 	/**
 	 * 用户ID
@@ -58,7 +60,7 @@ public class UserInfo {
 	/**
 	 * 接口权限
 	 */
-	private List<String> authorities;
+	private List<TenantGrantedAuthority> authorities;
 	/**
 	 * 部门ID,用于做数据权限
 	 */
@@ -89,6 +91,15 @@ public class UserInfo {
 	 */
 	public Boolean isRegularUser() {
 		return BasicUserType.REGULAR_USERS.name().equals(getUserType());
+	}
+	
+	/**
+	 * 判断用户是否启用
+	 *
+	 * @return
+	 */
+	public Boolean isEnabled() {
+		return this.enable;
 	}
 	
 }

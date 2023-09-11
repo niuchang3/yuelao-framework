@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>yuelao-framework-starter-security</module>
+        <module>yuelao-framework-starter-mybatis</module>
     </modules>
 
 

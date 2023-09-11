@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.util.ObjectUtils;
@@ -45,6 +46,10 @@ public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint
 			failed = ResultModel.failed(exception.getCode(), authException, authException.getMessage(), request.getRequestURI());
 		}
 		if (authException instanceof AuthenticationCredentialsNotFoundException) {
+			failed = ResultModel.failed(CustomizationHttpStatus.NOT_CERTIFIED, authException, CustomizationHttpStatus.NOT_CERTIFIED.getDescription(), request.getRequestURI());
+		}
+		
+		if(authException instanceof InsufficientAuthenticationException){
 			failed = ResultModel.failed(CustomizationHttpStatus.NOT_CERTIFIED, authException, CustomizationHttpStatus.NOT_CERTIFIED.getDescription(), request.getRequestURI());
 		}
 		

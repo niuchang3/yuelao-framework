@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.Getter;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,7 +25,7 @@ import org.yuelao.framework.starter.security.core.handler.AuthenticationEntryPoi
 import org.yuelao.framework.oauth.authentication.properties.AuthenticationServerProperties;
 import org.yuelao.framework.oauth.authentication.provider.AbstractBasicAuthenticationProvider;
 import org.yuelao.framework.oauth.authentication.provider.BasicPasswordAuthenticationProvider;
-import org.yuelao.framework.oauth.upms.service.UserService;
+import org.yuelao.framework.oauth.upms.service.OauthUserService;
 import org.yuelao.framework.starter.security.core.configurers.AbstractConfiguration;
 import org.yuelao.framework.starter.security.core.encoder.TokenEncoder;
 
@@ -102,15 +104,17 @@ public class BasicAuthenticationServerConfiguration extends AbstractConfiguratio
 		}
 		
 		ApplicationContext context = httpSecurity.getSharedObject(ApplicationContext.class);
-		UserService userService = context.getBean(UserService.class);
+		OauthUserService oauthUserService = context.getBean(OauthUserService.class);
 		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
+		StringRedisTemplate redisTemplate = context.getBean(StringRedisTemplate.class);
 		
 		authenticationProviders.forEach(authenticationProvider -> {
 			//将身份认证提供程序添加到Security内
-			authenticationProvider.setUserService(userService);
+			authenticationProvider.setOauthUserService(oauthUserService);
 			//将密码编码器添加到基础认证中
 			authenticationProvider.setPasswordEncoder(passwordEncoder);
 			
+			authenticationProvider.setRedisTemplate(redisTemplate);
 			httpSecurity.authenticationProvider(authenticationProvider);
 		});
 		

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.yuelao.framework.starter.security.core.encoder.JwtTokenEncoder;
 import org.yuelao.framework.starter.security.core.encoder.TokenEncoder;
 
@@ -73,6 +74,12 @@ public class SecurityResourceConfig {
 	@Bean
 	public TokenEncoder tokenEncoder(PrivateKey privateKey, RSAPublicKey publicKey) {
 		return new JwtTokenEncoder(privateKey, publicKey);
+	}
+	
+	@ConditionalOnMissingBean(RequestMappingHandlerMapping.class)
+	@Bean
+	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+		return new RequestMappingHandlerMapping();
 	}
 	
 }

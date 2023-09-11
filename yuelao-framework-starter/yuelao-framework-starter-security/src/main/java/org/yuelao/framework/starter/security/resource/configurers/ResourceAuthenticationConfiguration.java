@@ -26,7 +26,7 @@ public class ResourceAuthenticationConfiguration extends AbstractConfiguration {
 		try {
 			httpSecurity.requestCache().disable();
 			httpSecurity.securityContext().securityContextRepository(new NullSecurityContextRepository());
-			httpSecurity.anonymous().disable();
+//			httpSecurity.anonymous().disable();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

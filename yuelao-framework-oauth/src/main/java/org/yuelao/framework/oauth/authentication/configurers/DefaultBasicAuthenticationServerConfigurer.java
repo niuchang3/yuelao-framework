@@ -30,7 +30,9 @@ public class DefaultBasicAuthenticationServerConfigurer {
 				.csrf().ignoringRequestMatchers(authenticationRequest)
 				.and()
 				.requestMatcher(authenticationRequest)
-				.authorizeRequests().anyRequest().authenticated();
+				.authorizeRequests()
+				.antMatchers("/captcha/**").permitAll()
+				.anyRequest().authenticated();
 		
 		
 	}

@@ -7,7 +7,6 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.Getter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.yuelao.framework.starter.security.core.exception.TokenExpiresException;
@@ -15,7 +14,7 @@ import org.yuelao.framework.starter.security.core.exception.TokenParseException;
 import org.yuelao.framework.starter.security.core.exception.TokenSignException;
 import org.yuelao.framework.starter.security.core.token.AbstractBasicAuthenticationToken;
 import org.yuelao.framework.starter.security.resource.token.BearerTokenAuthenticationToken;
-import org.yuelao.framework.starter.security.user.UserInfo;
+import org.yuelao.framework.starter.security.user.UserDetail;
 
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -103,12 +102,12 @@ public class JwtTokenEncoder implements TokenEncoder {
 			Object authentication = parse.getJWTClaimsSet().getClaim("details");
 			String tokenType = (String) parse.getJWTClaimsSet().getClaim("tokenType");
 			String ip = (String) parse.getJWTClaimsSet().getClaim("ip");
-			UserInfo userInfo = objectMapper.convertValue(authentication, UserInfo.class);
-			List<GrantedAuthority> authorities = userInfo.getAuthorities().stream().map(str -> new SimpleGrantedAuthority(str)).collect(Collectors.toList());
+			UserDetail userDetail = objectMapper.convertValue(authentication, UserDetail.class);
+			
 			BearerTokenAuthenticationToken authenticationToken = new BearerTokenAuthenticationToken();
-			authenticationToken.setAuthorities(authorities);
-			authenticationToken.setPrincipal(userInfo.getAccount());
-			authenticationToken.setDetails(userInfo);
+			authenticationToken.setAuthorities(userDetail.getAuthorities());
+			authenticationToken.setPrincipal(userDetail.getAccount());
+			authenticationToken.setDetails(userDetail);
 			authenticationToken.setTokenType(tokenType);
 			authenticationToken.setAuthenticated(true);
 			authenticationToken.setIp(ip);
